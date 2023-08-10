@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+}
+
+group = 'pl.zajavka'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+ext {
+    springVersion = '5.3.20'
+    lombokVersion = '1.18.24'
+    logbackVersion = '1.2.11'
+    junitVersion = '5.8.2'
+}
+
+dependencies {
+    implementation "org.springframework:spring-core:$springVersion"
+    implementation "org.springframework:spring-beans:$springVersion"
+    implementation "org.springframework:spring-context:$springVersion"
+    implementation "org.springframework:spring-context-support:$springVersion"
+    implementation "org.springframework:spring-expression:$springVersion"
+
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    implementation "ch.qos.logback:logback-classic:$logbackVersion"
+
+    testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+    testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+}
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
