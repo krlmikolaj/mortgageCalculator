@@ -43,15 +43,12 @@ public class ResidualCalculationServiceImpl implements ResidualCalculationServic
         BigDecimal previousResidualDuration,
         RateAmounts rateAmounts
     ) {
-        // jak wystąpi nadpłata to zaczynają się schody,
-        // trzeba przeliczyć kredyt w zależności od tego czy podczas nadpłaty zmniejszamy czas trwania czy wysokość raty
         if (rateAmounts.overpayment().amount().compareTo(BigDecimal.ZERO) > 0) {
             return switch (inputData.rateType()) {
                 case CONSTANT -> calculateConstantResidualDuration(inputData, residualAmount, rateAmounts);
                 case DECREASING -> calculateDecreasingResidualDuration(residualAmount, rateAmounts);
             };
         } else {
-            // w każdym normalnym przypadku z miesiąca na miesiąc ilość pozostałych miesięcy jest zmniejszna o 1
             return previousResidualDuration.subtract(BigDecimal.ONE);
         }
     }
@@ -61,9 +58,6 @@ public class ResidualCalculationServiceImpl implements ResidualCalculationServic
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")
-    // tutaj mamy zaszytą logikę z tego co wspomniałem w trakcie nagrań,
-    // czyli jak oszacować ilość miesięcy jaka nam pozostała do spłaty przy nadpłacie, ratach stałych i zmniejszeniu czasu trwania.
-    // Wyjaśnienie stosowanych wzorów zostało dostarczone w pliku z rozwiązaniem
     private BigDecimal calculateConstantResidualDuration(InputData inputData, BigDecimal residualAmount, RateAmounts rateAmounts) {
         // log_y(x) = log(x) / log (y)
         BigDecimal q = AmountsCalculationService.calculateQ(inputData.interestPercent());
